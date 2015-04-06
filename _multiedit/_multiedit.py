@@ -5,7 +5,8 @@
 # (the original copyright notice is reproduced below)
 #
 # (c) Copyright 2008 by Christo Butcher
-# Licensed under the LGPL, see <http://www.gnu.org/licenses/>
+# Licensed under the LGPL, s
+# ee <http://www.gnu.org/licenses/>
 #
 
 import aenea
@@ -47,20 +48,14 @@ aenea.vocabulary.inhibit_global_dynamic_vocabulary('multiedit', MULTIEDIT_TAGS)
 
 
 command_table = aenea.configuration.make_grammar_commands('multiedit', {
+    "Testing [<text>] feen": Text('%(text)s'),
+    # "Testing [<text>] ": Text('%(text)s'),
     #### Cursor manipulation
-    'up [<n>]':    Key('up:%(n)d'),
-    'down [<n>]':  Key('down:%(n)d'),
-    'left [<n>]':  Key('left:%(n)d'),
-    'right [<n>]': Key('right:%(n)d'),
-
-    'gope [<n>]':  Key('pgup:%(n)d'),
-    'drop [<n>]':  Key('pgdown:%(n)d'),
-
     'lope [<n>]':  Key('c-left:%(n)d'),
-    'yope [<n>]':  Key('c-right:%(n)d'),
+    'rope [<n>]':  Key('c-right:%(n)d'),
 
-    'care':        Key('home'),
-    'doll':        Key('end'),
+    'srope [<n>]': Key('cs-right:%(n)d'),
+    'slope [<n>]': Key('cs-left:%(n)d'),
 
     'file top':    Key('c-home'),
     'file toe':    Key('c-end'),
@@ -81,13 +76,18 @@ command_table = aenea.configuration.make_grammar_commands('multiedit', {
     'squishy [<n>]':   Key('end:2, del, space'),
     'strip':           Key('s-end:2, del'),
     'striss':          Key('s-home:2, del'),
-    'trance [<n>]':    Key('home:2, shift:down, down:%(n)d, up, end:2, shift:up, c-c, end:2, enter, c-v'),
-    'wipe [<n>]':      Key('home:2, shift:down, down:%(n)d, up, end:2, del, shift:up, backspace'),
+    'trance [<n>]':    Key('home:2, shift:down, down:%(n)d,  shift:up, c-c, end:2, enter, c-v'),
+    'wipe [<n>]':      Key('home:2, shift:down, down:%(n)d,  del, shift:up'),
+    "see down [<n>]":  Key("shift:down, down:%(n)d,shift:up"),
+    "see up [<n>]": Key("shift:down, up:%(n)d,shift:up"),
+    'comment [<n>]': Key('shift:down, down:%(n)d, shift:up, control:down, slash, control:up'),
+
 
     #### Words
-    'bump [<n>]':      Key('cs-right:%(n)d, del'),
-    'whack [<n>]':     Key('cs-left:%(n)d, del'),
+    'bump [<n>]':      Key('c-del:%(n)d'),
+    'whack [<n>]':     Key('c-backspace:%(n)d'),
     }, config_key='commands')
+
 
 
 class FormatRule(CompoundRule):
@@ -265,7 +265,7 @@ class RepeatRule(CompoundRule):
     # Here we define this rule's spoken-form and special elements.
     spec = '[ <sequence> ] [ ( literal <format_rule> )  | <finish> ] [repeat <n> times]'
 
-    
+
     defaults = {
         'n': 1, # Default repeat count.
         }

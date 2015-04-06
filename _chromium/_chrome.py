@@ -13,16 +13,16 @@ from aenea import (
     Text
     )
 
-chromium_context = aenea.AeneaContext(
-    ProxyAppContext(cls_name='chromium', cls='chromium'),
-    (AppContext(executable='chrome') | AppContext(executable='chromium'))
+chrome_context = aenea.AeneaContext(
+    ProxyAppContext(cls_name='chrome', cls='chrome'),
+    (AppContext(executable='chrome'))
     )
 
-chromium_grammar = Grammar('chromium', context=chromium_context)
+chrome_grammar = Grammar('chrome', context=chrome_context)
 
 
-class ChromiumRule(MappingRule):
-    mapping = aenea.configuration.make_grammar_commands('chromium', {
+class chromeRule(MappingRule):
+    mapping = aenea.configuration.make_grammar_commands('chrome', {
         'close [<n>] ( frame | frames )':    Key('c-w:%(n)d'),
         'open frame':                        Key('c-t'),
         'open window':                       Key('c-n'),
@@ -38,13 +38,8 @@ class ChromiumRule(MappingRule):
         'previous [<n>]':                    Key('cs-g:%(n)d'),
         'back [<n>]':                        Key('a-left:%(n)d'),
         'forward [<n>]':                     Key('a-right:%(n)d'),
-
-        'up': Key('up:5'),
-        'down': Key('down:5'),
-        'page down': Key('down:25'),
-        'page up': Key('up:25'),
-        'home': Key('home'),
-        'end': Key('end'),
+        'enter': Key('enter'),
+        'escape': Key('escape'),
         })
 
     extras = [IntegerRef('n', 1, 10), Dictation('text')]
@@ -53,13 +48,13 @@ class ChromiumRule(MappingRule):
         'text': ''
         }
 
-chromium_grammar.add_rule(ChromiumRule())
+chrome_grammar.add_rule(chromeRule())
 
-chromium_grammar.load()
+chrome_grammar.load()
 
 
 def unload():
-    global chromium_grammar
-    if chromium_grammar:
-        chromium_grammar.unload()
-    chromium_grammar = None
+    global chrome_grammar
+    if chrome_grammar:
+        chrome_grammar.unload()
+    chrome_grammar = None
