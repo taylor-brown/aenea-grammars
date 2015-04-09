@@ -12,69 +12,55 @@ import aenea.configuration
 
 import dragonfly
 
+import lex_parse
+
+import generate_lexer
+
 always_context = aenea.ProxyPlatformContext('linux')
 
 grammar = dragonfly.Grammar('always', context=always_context)
-
+from aenea import (
+    AeneaContext,
+    AppContext,
+    Alternative,
+    CompoundRule,
+    Dictation,
+    DictList,
+    DictListRef,
+    Grammar,
+    IntegerRef,
+    Literal,
+    ProxyAppContext,
+    MappingRule,
+    NeverContext,
+    Repetition,
+    RuleRef,
+    Sequence
+)
 
 from aenea.lax import Key, Text
 
-always_mapping = aenea.configuration.make_grammar_commands('always', {
-    'up': Key('up'),
-    'down': Key('down'),
-    'left': Key('left'),
-    'right': Key('right'),
-    'pad': Key('down:25'),
-    'pug': Key('up:25'),
-    'home': Key('home'),
-    'end': Key('end'),
-    'up <n>': Key('up:%(n)d'),
-    'down <n>': Key('down:%(n)d'),
-    'left <n>': Key('left:%(n)d'),
-    'right <n>': Key('right:%(n)d'),
-    'whoops': Key('c-z'),
-    'reoops': Key('cs-z'),
-    'copy': Key('c-c'),
-    'paste': Key('c-v'),
 
-    #navigation
-    'lope [<n>]': Key('c-left:%(n)d'),
-    'rope [<n>]': Key('c-right:%(n)d'),
-
-    'srope [<n>]': Key('cs-right:%(n)d'),
-    'slope [<n>]': Key('cs-left:%(n)d'),
-
-    'file top': Key('c-home'),
-    'file toe': Key('c-end'),
-
-    # ### Various keys
-    'ace [<n>]': Key('space:%(n)d'),
-    'act': Key('escape'),
-    'chuck [<n>]': Key('del:%(n)d'),
-    'scratch [<n>]': Key('backspace:%(n)d'),
-    'slap [<n>]': Key('enter:%(n)d'),
-    'tab [<n>]': Key('tab:%(n)d'),
-
-    #### Lines
-    'nab [<n>]': Key('home:2, shift:down, down:%(n)d, up, end:2, shift:up, c-c, end:2'),
-    'wipe [<n>]': Key('home:2, shift:down, down:%(n)d,  del, shift:up'),
-    "see down [<n>]": Key("shift:down, down:%(n)d,shift:up"),
-    "see up [<n>]": Key("shift:down, up:%(n)d,shift:up"),
-    'comment [<n>]': Key('shift:down, down:%(n)d, shift:up, control:down, slash, control:up'),
+def textify(input):
+    for x in input:
+        input[x] = Text(input[x])
 
 
-    #### Words
-    'bump [<n>]': Key('c-del:%(n)d'),
-    'whack [<n>]': Key('c-backspace:%(n)d'),
+class Compound(CompoundRule):
+    inner_keys = '( ' + '|'.join(generate_lexer.all_keys.keys()) + ')'
+    spec = inner_keys + ('[' + inner_keys + ']') * 10
+    extras = [aenea.misc.DigitalInteger('n', 1, None), Dictation(name='text')]
+    defaults = {
+        'n': 1,
+        }
 
-})
+    def _process_recognition(self, value, extras):
+        words = ' '.join(value.words())
+        print 'process recognition node:', words
+        [i.execute() for i in lex_parse.ext_yacc.parse(words)]
 
 
-class always(dragonfly.MappingRule):
-    mapping = always_mapping
-    extras = [aenea.misc.DigitalInteger('n', 1, None)]
-
-grammar.add_rule(always())
+grammar.add_rule(Compound())
 grammar.load()
 
 
