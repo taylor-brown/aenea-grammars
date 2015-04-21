@@ -14,7 +14,6 @@ import dragonfly
 
 import lex_parse
 
-import generate_lexer
 
 always_context = aenea.ProxyPlatformContext('linux')
 
@@ -47,16 +46,18 @@ def textify(input):
 
 
 class Compound(CompoundRule):
-    inner_keys = '( ' + '|'.join(generate_lexer.all_keys.keys()) + ')'
-    spec = inner_keys + ('[' + inner_keys + ']') * 10
+    f=open('/tmp/log.txt', "a")
+    inner_keys = '( ' + '|'.join(lex_parse.all_keys.keys()) + ')'
+    spec = inner_keys + ('[' + inner_keys + ']') * 30
     extras = [aenea.misc.DigitalInteger('n', 1, None), Dictation(name='text')]
     defaults = {
         'n': 1,
         }
 
     def _process_recognition(self, value, extras):
-        words = ' '.join(value.words())
-        print 'process recognition node:', words
+        words = ' '.join(map(lambda x:x.split('\\')[0], value.words()))
+        self.f.write(words+"\n")
+        self.f.flush()
         [i.execute() for i in lex_parse.ext_yacc.parse(words)]
 
 

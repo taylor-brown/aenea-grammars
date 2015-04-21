@@ -53,7 +53,7 @@ symbols = {
     "amp": "ampersand",
     "ash": "slash",
     "atsign": "at",
-    "backash": "slash",
+    "backash": "backslash",
     "backtick": "backtick",
     "bang": "bang",
     "bar": "bar",
@@ -68,11 +68,11 @@ symbols = {
     "pound": "hash",
     "push": "lparen",
     "quest": "question",
-    "quote": "quote",
+    "quote": "dquote",
     "rail": "underscore",
     "semi": "semicolon",
     "smote": "squote",
-    "star": "star",
+    "sol": "star",
     "tilde": "tilde",
     "yeah": "colon",
 
@@ -82,9 +82,9 @@ symbols = {
     "divided": "slash",
     "plus": "plus",
     "minus": "minus",
-    'boxso': 'leftbrace',
-    'boxco': 'rightbrace',
-    'squareso': 'leftbracket',
+    'boxso': 'lbrace',
+    'boxco': 'rbrace',
+    'squareso': 'lbracket',
     'squareco': 'rbracket'
 
 }
