@@ -2,7 +2,7 @@ key_combos = {
     'pad': ('down:25'),
     'pug': ('up:25'),
     'home': ('home'),
-    'end': ('end'),
+    'feen': ('end'),
     'whoops': ('c-z'),
     'reoops': ('cs-z'),
     'copy': ('c-c'),
@@ -220,7 +220,7 @@ def t_CAMEL(t):
     t.value = t.value[6:]
 
     def format_camel(text):
-        return text[0] + ''.join([word[0].upper() + word[1:] for word in text[1:]])
+        return text[0].lower() + ''.join([word[0].upper() + word[1:] for word in text[1:]])
 
     t.value = format_camel(t.value.split(' '))
     return t
@@ -267,7 +267,7 @@ from aenea.lax import Key, Text
 #         super(Text, self).__init__()
 #
 #     def __repr__(self):
-#         return 'Text' + self.txt
+#         return 'Text:' + self.txt
 #
 #
 # class Key(object):
@@ -276,7 +276,7 @@ from aenea.lax import Key, Text
 #         super(Key, self).__init__()
 #
 #     def __repr__(self):
-#         return "key" + self.txt
+#         return "key:" + self.txt
 
 
 def p_statement_expr(t):
